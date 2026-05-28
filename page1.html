@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bảng cửu chương</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>bảng cửu chương</h2>
+    <p>Bấm chọn một số bên dưới hoặc nhập số trong ô để hiển thị bảng cửu chương tương ứng</p>
+    
+    <div class="number-input-group">
+        <input id="numberInput" type="number" min="1" max="20" placeholder="Nhập số (1-20)...">
+        <button id="showButton" type="button">Hiển thị</button>
+    </div>
+    
+    <div class="button-grid" id="buttonArea">
+    </div>
+    
+    <div class="result-box">
+        <h3 id="tableTitle">bảng cửu chương</h3>
+        <div id="tableContent">
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- CHỌN CÁC PHẦN TỬ DOM (Selecting Elements) ---
+    const buttonArea = document.getElementById('buttonArea');
+    const tableTitle = document.getElementById('tableTitle');
+    const tableContent = document.getElementById('tableContent');
+    const numberInput = document.getElementById('numberInput');
+    const showButton = document.getElementById('showButton');
+
+    // --- TỰ ĐỘNG TẠO 20 NÚT BẤM (Creating Elements) ---
+    for (let i = 1; i <= 20; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'btn-number';
+        btn.textContent = i; // Thay đổi nội dung hiển thị của nút
+        
+        // --- XỬ LÝ SỰ KIỆN CLICK CHO TỪNG NÚT (Handling Events) ---
+        btn.onclick = function() {
+            // Xóa hiệu ứng 'active' của nút cũ và thêm vào nút vừa click (Changing Style)
+            const currentActive = document.querySelector('.btn-number.active');
+            if (currentActive) currentActive.classList.remove('active');
+            btn.classList.add('active');
+
+            // Gọi hàm để hiển thị bảng cửu chương của số được chọn
+            hienThiCuuChuong(i);
+        };
+
+        buttonArea.appendChild(btn); // Thêm nút vào vùng chứa trên giao diện
+    }
+
+    // --- XỬ LÝ NHẬP SỐ VÀ NÚT HIỂN THỊ ---
+    showButton.onclick = function() {
+        const value = Number(numberInput.value);
+        if (!value || value < 1 || value > 20) {
+            alert('Vui lòng nhập số nguyên từ 1 đến 20.');
+            numberInput.focus();
+            return;
+        }
+        deselectButtons();
+        hienThiCuuChuong(value);
+    };
+
+    numberInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            showButton.click();
+        }
+    });
+
+    function deselectButtons() {
+        const currentActive = document.querySelector('.btn-number.active');
+        if (currentActive) currentActive.classList.remove('active');
+    }
+
+    // --- HÀM TẠO VÀ HIỂN THỊ BẢNG CỬU CHƯƠNG DYNAMICALLY ---
+    function hienThiCuuChuong(number) {
+        // 1. Cập nhật tiêu đề bảng cửu chương (Changing Content)
+        tableTitle.textContent = "Bảng Cửu Chương " + number;
+        
+        // 2. Xóa sạch nội dung cũ trước khi tạo bảng mới (Để không bị cộng dồn)
+        tableContent.innerHTML = ""; 
+
+        // 3. Dùng vòng lặp chạy từ 1 đến 10 để tạo ra các phép tính (Creating Elements)
+        for (let j = 1; j <= 10; j++) {
+            // Tạo một thẻ div mới cho mỗi dòng phép tính
+            const line = document.createElement('div');
+            line.className = 'multiplication-line';
+            
+            // Thiết lập nội dung text cho phép tính (Ví dụ: 5 x 1 = 5)
+            line.textContent = `${number} x ${j} = ${number * j}`;
+            
+            // Gắn dòng vừa tạo vào vùng chứa kết quả (appendChild)
+            tableContent.appendChild(line);
+        }
+    }
+</script>
+
+</body>
+</html>
